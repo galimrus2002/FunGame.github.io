@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Весёлая игра</title>
+    <style>
+    	* { padding: 0; margin: 0; }
+    	canvas { background: #eee;}
+		body { background: #c9bda3; }
+    </style>
+</head>
+<body>
+    <canvas id="myCanvas"></canvas>
+    <script>
+        var canvas;
+		var ctx;
+		var y=200;
+		var EnemyX=window.innerWidth;
+		var EnemyY;
+		var n;
+		var l=false;
+		var second=0
+		var millisecond=0
+		game=true
+    	function getRandomInRange(max) {
+            return Math.floor(Math.random() * (max - 0 + 1)) + 0;
+		}	
+		window.onload = function(){
+    		canvas = document.getElementById('myCanvas');
+    		canvas.width = window.innerWidth;
+    		canvas.height = window.innerHeight;
+    		ctx = canvas.getContext('2d');
+			canvas.onclick = function (e) {
+				if (e.clientY>=0&&e.clientY<=150) {
+					y=100;
+				}
+				if (e.clientY>150&&e.clientY<=250) {
+					y=200;
+				}
+				if (e.clientY>250&&e.clientY<=350) {
+					y=300;
+				}
+				if (game==false) {
+					y=200
+					EnemyX=window.innerWidth
+					second=0
+					millisecond=0
+					game=true
+					a=setInterval(draw, 10)
+				}
+			};
+		}
+		function draw() {
+    		ctx.clearRect(0, 0, canvas.width, canvas.height)
+			ctx.beginPath();
+			ctx.lineWidth = 2;
+			ctx.strokeStyle = 'black';
+			ctx.moveTo(10, 100);
+			ctx.lineTo(canvas.width, 100);
+			ctx.stroke();
+
+    		ctx.beginPath();
+			ctx.lineWidth = 2;
+			ctx.strokeStyle = 'black';
+			ctx.moveTo(10, 200);
+			ctx.lineTo(canvas.width, 200);
+			ctx.stroke();
+
+    		ctx.beginPath();
+			ctx.lineWidth = 2;
+			ctx.strokeStyle = 'black';
+			ctx.moveTo(10, 300);
+			ctx.lineTo(canvas.width, 300);
+			ctx.stroke();
+			//Игрок
+    		ctx.beginPath();
+			ctx.arc(100, y, 40, 0, 2*Math.PI, false);
+			ctx.fillStyle = 'Green';
+			ctx.fill();
+			ctx.lineWidth = 1;
+			ctx.strokeStyle = 'Green';
+			ctx.stroke();
+			//Враги
+			ctx.beginPath()
+        	ctx.rect(EnemyX,EnemyY,100,100)
+        	ctx.fillStyle = "red"
+        	ctx.fill()
+        	ctx.closePath()
+			if (l==false) {
+					l=true
+				n=getRandomInRange(2)
+				if (n==0) {
+					EnemyY=50
+				}
+				if (n==1) {
+					EnemyY=150
+				}
+				if (n==2) {
+					EnemyY=250
+				}
+			}
+			EnemyX-=10
+			if (EnemyX<0) {
+				l=false
+				EnemyX=canvas.width
+			}
+			if (EnemyX<=140&&EnemyY==y-50) {
+    			game=false
+				ctx.font = '40px Times New Roman'
+				ctx.fillStyle='#f24343'
+				ctx.strokeStyle='#d63939'
+				ctx.fillText( 'Игра окончена' , 20, 50)
+				ctx.strokeText( 'Игра окончена' , 20, 50)
+				ctx.fillText( 'Вы проиграли' , 20, 150);
+				ctx.strokeText( 'Вы проиграли' , 20, 150)
+		    	ctx.fillText( 'Вы продержались '+String(second)+' секунд', 20, 250);
+		    	ctx.strokeText( 'Вы продержались '+String(second)+' секунд', 20, 250)
+				ctx.fillText( 'Нажмите на икран для продолжения', 20, 350);
+		    	ctx.strokeText( 'Нажмите на икран для продолжения', 20, 350)
+				ctx.closePath()
+				clearInterval(a)
+			}
+			millisecond+=10
+        	if (millisecond==1000) {
+    	    	millisecond=0
+    	    	second++
+        	}
+		}
+		var a=setInterval(draw, 10);
+    </script>
+</body>
+</html>
