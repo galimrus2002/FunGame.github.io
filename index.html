@@ -17,10 +17,16 @@
 		var y=200;
 		var EnemyX=window.innerWidth;
 		var EnemyY;
+		var ShieldX=window.innerWidth;
+		var ShieldY;
+		var Shield=false
 		var n;
+		var k;
+		var speed=4;
 		var l=false;
 		var second=0
 		var millisecond=0
+		var secondShield=0
 		game=true
     	function getRandomInRange(max) {
             return Math.floor(Math.random() * (max - 0 + 1)) + 0;
@@ -43,8 +49,11 @@
 				if (game==false) {
 					y=200
 					EnemyX=window.innerWidth
+					ShieldX=window.innerWidth+10
+					speed=4
 					second=0
 					millisecond=0
+					secondShield=0
 					game=true
 					a=setInterval(draw, 10)
 				}
@@ -72,6 +81,13 @@
 			ctx.moveTo(10, 300);
 			ctx.lineTo(canvas.width, 300);
 			ctx.stroke();
+			if (Shield==true) {
+				ctx.beginPath()
+        		ctx.rect(50,y-50,100,100)
+        		ctx.fillStyle = "DeepSkyBlue"
+        		ctx.fill()
+        		ctx.closePath()
+			}
 			//Игрок
     		ctx.beginPath();
 			ctx.arc(100, y, 40, 0, 2*Math.PI, false);
@@ -86,6 +102,14 @@
         	ctx.fillStyle = "red"
         	ctx.fill()
         	ctx.closePath()
+        	//Щит
+    		ctx.beginPath();
+			ctx.arc(ShieldX, ShieldY, 20, 0, 2*Math.PI, false);
+			ctx.fillStyle = 'DeepSkyBlue';
+			ctx.fill();
+			ctx.lineWidth = 1;
+			ctx.strokeStyle = 'DeepSkyBlue';
+			ctx.stroke();
 			if (l==false) {
 					l=true
 				n=getRandomInRange(2)
@@ -99,12 +123,40 @@
 					EnemyY=250
 				}
 			}
-			EnemyX-=10
+			EnemyX-=speed
 			if (EnemyX<0) {
 				l=false
 				EnemyX=canvas.width
+				if (speed<=8) {
+					speed+=0.5
+				}
+				console.log(speed)
 			}
-			if (EnemyX<=140&&EnemyY==y-50) {
+			if (secondShield==5) {
+				Shield=false
+				secondShield=6
+				k=getRandomInRange(2)
+				if (k==0) {
+					ShieldY=100
+				}
+				if (k==1) {
+					ShieldY=200
+				}
+				if (k==2) {
+					ShieldY=300
+				}
+			}
+			if (secondShield>5) {
+				ShieldX-=speed
+			}
+			if (ShieldX<0) {
+				ShieldX=canvas.width+10
+				secondShield=0
+			}
+			if (ShieldX<=140&&ShieldY==y) {
+				Shield=true
+			}
+			if (EnemyX<=140&&EnemyY==y-50&&Shield==false) {
     			game=false
 				ctx.font = '40px Times New Roman'
 				ctx.fillStyle='#f24343'
@@ -124,6 +176,7 @@
         	if (millisecond==1000) {
     	    	millisecond=0
     	    	second++
+    	    	secondShield++
         	}
 		}
 		var a=setInterval(draw, 10);
